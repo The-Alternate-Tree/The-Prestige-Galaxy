@@ -6,6 +6,30 @@ hc = hasChallenge;
 ha = hasAchievement;
 ic = inChallenge;
 be = buyableEffect;
+
+// text fetures
+function makeRed(c) {
+  return "<bdi style='color:#CC0033'>" + c + "</bdi>";
+}
+function makeOrange(c) {
+  return "<bdi style='color:#ff9100'>" + c + "</bdi>";
+}
+function makeYellow(c) {
+  return "<bdi style='color:#ffdd00'>" + c + "</bdi>";
+}
+function makeGreen(c) {
+  return "<bdi style='color:#66E000'>" + c + "</bdi>";
+}
+function makeBlue(c) {
+  return "<bdi style='color:#3379E3'>" + c + "</bdi>";
+}
+
+function makePurple(c) {
+  return "<bdi style='color:#66297D'>" + c + "</bdi>";
+}
+function makePink(c) {
+  return "<bdi style='color:#ff00ed'>" + c + "</bdi>";
+}
 // layers:
 addLayer("p", {
   name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -333,20 +357,38 @@ addLayer("ach", {
   layerShown() {
     return true;
   },
-  tabFormat: {
-    achievements: {
-      content: [
-        ["infobox", "achievementInfo"],
-        "main-display",
-
-        ["blank", "5px"], // Height
-        ["bar", "progress"],
-        ["blank", "5px"], // Height
-
-        "achievements",
-      ],
-    },
-  },
+  tabFormat: [
+    "main-display",
+    "blank",
+    [
+      "display-text",
+      function () {
+        return (
+          "ACHIEVEMENT INFO:<br>Some achievements give rewards, so it's worth tring to get them. Some achievements have a " +
+          makeRed("c") +
+          makeOrange("o") +
+          makeYellow("l") +
+          makeGreen("o") +
+          makeBlue("r") +
+          makePurple("e") +
+          makePink("d") +
+          " border:<br>" +
+          "\u2022Achievements with a " +
+          makeRed("red") +
+          " border are starts of a major layer.<br>\u2022Achievements with a " +
+          makeBlue("blue") +
+          " border are endgames of a content update.<br>\u2022Achievements with a " +
+          makeGreen("green") +
+          " border unlock things."
+        );
+      },
+      {},
+    ],
+    "blank",
+    ["bar", "progress"],
+    "blank",
+    "achievements",
+  ],
   bars: {
     progress: {
       fillStyle: { "background-color": "yellow" },
@@ -371,6 +413,7 @@ addLayer("ach", {
       unlocked: true,
     },
   },
+  tooltip: "achievements",
   achievements: {
     11: {
       name: "First Reset",
@@ -378,6 +421,12 @@ addLayer("ach", {
         return player.p.points.gte(1);
       }, // This one is a freebie
       tooltip: "Get a prestige point.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "red",
+        };
+      },
     },
     12: {
       name: "The Achievement Galaxy",
@@ -422,6 +471,12 @@ addLayer("ach", {
         return player.s.points.gte(1);
       }, // This one is a freebie
       tooltip: "Super prestige.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "red",
+        };
+      },
     },
     23: {
       name: "These Upgrades Are Super",
@@ -429,6 +484,12 @@ addLayer("ach", {
         return hu("s", 13);
       }, // This one is a freebie
       tooltip: "Buy super prestige upgrade 3.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "blue",
+        };
+      },
     },
   },
 });
