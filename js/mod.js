@@ -13,12 +13,20 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-  num: "1.00",
+  num: "1.01",
 
-  name: "Base Game",
+  name: "Achievement Rework",
 };
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3><br><br>v1.01 - Achievement Rework - 4/21/2026</h3><br>
+		
+		- Achievements layer now has no subtab in it <br>
+		- Added colored borders to some achievements <br>
+		- Remade the achievement info <br>
+		- Fixed the achievement layer tooltip saying "0 undefined" <br>
+
+
 <h3><br><br>v1.00 - Base Game - 4/19/2026</h3><br>
 		- Added 2 layers <br>
 		- Added 13 upgrades <br>
