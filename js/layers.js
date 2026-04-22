@@ -51,7 +51,8 @@ addLayer("p", {
     },
   },
   passiveGeneration() {
-    return 0;
+    if (hu("s", 21)) return 0.5;
+    else return 0;
   },
   doReset(resettingLayer) {
     let keep = [];
@@ -73,6 +74,9 @@ addLayer("p", {
     if (hu("p", 22)) mult = mult.times(3);
     if (hu("s", 11)) mult = mult.times(3);
     if (hu("s", 13)) mult = mult.times(4);
+    if (hu("s", 15)) mult = mult.times(3);
+    if (hu("s", 22)) mult = mult.times(3);
+    if (hu("s", 34)) mult = mult.times(4);
 
     return mult;
   },
@@ -119,7 +123,7 @@ addLayer("p", {
     },
     12: {
       title: "Prestiged Points",
-      description: "Prestige points now boost point gain.",
+      description: "Another generic one. Prestige points now boost point gain.",
       cost: new Decimal(3),
       unlocked() {
         return hu("p", 11);
@@ -136,7 +140,7 @@ addLayer("p", {
     },
     13: {
       title: "Small Boost",
-      description: "Multiply point gain by 1.6x.",
+      description: "A small boost of 1.6x points.",
       cost: new Decimal(10),
       unlocked() {
         return hu("p", 12);
@@ -157,7 +161,7 @@ addLayer("p", {
     },
     14: {
       title: "Repetition...",
-      description: "Prestige pointss boost points, but more, and caps at 500x.",
+      description: "Prestige points boost points, but more, and caps at 500x.",
       cost: new Decimal(25),
       unlocked() {
         return hu("p", 13);
@@ -185,6 +189,7 @@ addLayer("p", {
         let ret = new Decimal(player.p.upgrades.length).pow(0.75);
         if (ha("ach", 14)) ret = ret.times(1.2);
         if (ha("ach", 21)) ret = ret.times(1.25);
+        if (hu("s", 22)) ret = ret.pow(1.1);
 
         return ret;
       },
@@ -194,7 +199,7 @@ addLayer("p", {
     },
     21: {
       title: "Even More Points",
-      description: "Gain 4x as many points.",
+      description: "Super generic. Gain 4x as many points.",
       cost: new Decimal(1000),
       unlocked() {
         return hu("p", 15);
@@ -202,7 +207,7 @@ addLayer("p", {
     },
     22: {
       title: "More Prestige",
-      description: "Triple prestige point gain.",
+      description: "Still generic... Triple prestige point gain.",
       cost: new Decimal(10000),
       unlocked() {
         return hu("p", 21);
@@ -228,7 +233,7 @@ addLayer("p", {
     25: {
       title: "The Last One",
       description:
-        "Unlock super prestige and <b>Small Boost</b>'s effect base is 2.6.",
+        "Unlock super prestige... and <b>Small Boost</b>'s effect base is 2.6. ",
       cost: new Decimal(1e6),
       unlocked() {
         return hu("p", 24);
@@ -263,6 +268,9 @@ addLayer("s", {
     // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1);
     if (hu("s", 13)) mult = mult.times(2);
+    if (hc("s", 11)) mult = mult.times(6);
+    if (hu("s", 22)) mult = mult.times(2);
+    if (hu("s", 24)) mult = mult.times(eff("s", 24));
 
     return mult;
   },
@@ -295,6 +303,14 @@ addLayer("s", {
         "upgrades",
       ],
     },
+    challenges: {
+      content: [
+        "main-display",
+        ["blank", "5px"], // Height
+
+        "challenges",
+      ],
+    },
   },
   passiveGeneration() {
     return 0;
@@ -308,14 +324,15 @@ addLayer("s", {
   upgrades: {
     11: {
       title: "Super Boost",
-      description: "Gain 5x more points and 3x more prestige points.",
+      description:
+        "Here's 2 boosts, gain 5x more points and 3x more prestige points.",
       cost: new Decimal(1),
       unlocked() {
         return player[this.layer].unlocked;
       }, // The upgrade is only visible when this is true
     },
     12: {
-      title: "Just Another Upgrade",
+      title: "Bigerest Boost",
       description: "X10 point gain.",
       cost: new Decimal(4),
       unlocked() {
@@ -323,15 +340,236 @@ addLayer("s", {
       }, // The upgrade is only visible when this is true
     },
     13: {
-      title: "So Many Boosts",
+      title: "Too Many Boosts",
       description:
-        "X8 point gain, x4 prestige point gain, and x2 super prestige point gain.",
+        "X8 point gain, x4 prestige point gain, and x2 super prestige point gain. Too many indeed.",
       cost: new Decimal(10),
       unlocked() {
         return hu("s", 12);
       }, // The upgrade is only visible when this is true
     },
+    14: {
+      title: "Nerf Upgrade?",
+      description: "Divide point gain by 0.2.",
+      cost: new Decimal(50),
+      unlocked() {
+        return hu("s", 13);
+      }, // The upgrade is only visible when this is true
+    },
+    15: {
+      title: "Challenging",
+      description: "Unlock a challenge and triple prestige points.",
+      cost: new Decimal(100),
+      unlocked() {
+        return hu("s", 14);
+      }, // The upgrade is only visible when this is true
+    },
+    21: {
+      title: "Prestige Generation",
+      description:
+        "Generate 50% of prestige points gained per second. Been waiting for automation forever.",
+      cost: new Decimal(1000),
+      unlocked() {
+        return hu("s", 15) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    22: {
+      title: "Boost Madness",
+      description:
+        "X5 points, x3 prestige points, x2 SP, and raise <b>Boost The Boost</b> to ^1.1.",
+      cost: new Decimal(1200),
+      unlocked() {
+        return hu("s", 21) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    23: {
+      title: "Super Points",
+      description: "SP boosts points, caps at 1,000,000x. Very super.",
+      cost: new Decimal(10000),
+      unlocked() {
+        return hu("s", 22) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+      effect() {
+        // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+        let ret = player.s.points.add(1).pow(0.32);
+        if (ret.gte("1e6")) ret = new Decimal("1e6");
+        return ret;
+      },
+      effectDisplay() {
+        return format(this.effect()) + "x";
+      }, // Add formatting to the effect
+    },
+    24: {
+      title: "Points Super",
+      description: "Points boost SP, caps at 500x. Kinda super.",
+      cost: new Decimal(30000),
+      unlocked() {
+        return hu("s", 23) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+      effect() {
+        // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+        let ret = player.points.add(1).pow(0.03);
+        if (ret.gte("500")) ret = new Decimal("500");
+        return ret;
+      },
+      effectDisplay() {
+        return format(this.effect()) + "x";
+      }, // Add formatting to the effect
+    },
+    25: {
+      title: "Logarithmic Based Formula",
+      description: "SP boosts points, again, but logarithmically.",
+      cost: new Decimal(125000),
+      unlocked() {
+        return hu("s", 24) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+      effect() {
+        // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+        let ret = player.s.points.add(1).log(4);
+        return ret;
+      },
+      effectDisplay() {
+        return format(this.effect()) + "x";
+      }, // Add formatting to the effect
+    },
+    31: {
+      title: "Bigestest Boost",
+      description: "Definitly making up words. Multiply points by 50x!",
+      cost: new Decimal(250000),
+      unlocked() {
+        return hu("s", 25) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    32: {
+      title: "Boosted",
+      description: "Permanetly unlock boosters.",
+      cost: new Decimal(1e6),
+      unlocked() {
+        return hu("s", 31) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    33: {
+      title: "Better Boosters",
+      description: "Heard that before.. Add 1 to booster effect base.",
+      cost: new Decimal(1e7),
+      unlocked() {
+        return hu("s", 32) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    34: {
+      title: "More Prestige II",
+      description:
+        "Yet the genericity continues, gain 4x as many prestige points.",
+      cost: new Decimal(2.5e7),
+      unlocked() {
+        return hu("s", 33) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
   },
+  challenges: {
+    11: {
+      name: "Reduced Points",
+      completionLimit: 1,
+      challengeDescription() {
+        return (
+          "Base point gain is set to 1/10,000.<br>" +
+          challengeCompletions(this.layer, this.id) +
+          "/" +
+          this.completionLimit +
+          " completions"
+        );
+      },
+      unlocked() {
+        return hasUpgrade("s", 15);
+      },
+      goalDescription: "Get 1e11 points.",
+      canComplete() {
+        return player.points.gte(1e11);
+      },
+
+      rewardDescription: "Unlock more upgrades and X6 super prestige points.",
+    },
+  },
+});
+addLayer("b", {
+  name: "boosters", // This is optional, only used in a few places, If absent it just uses the layer id.
+  symbol: "B", // This appears on the layer's node. Default is the id with the first letter capitalized
+  position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+  startData() {
+    return {
+      unlocked: false,
+      points: new Decimal(0),
+      best: new Decimal(0),
+      total: new Decimal(0),
+      time: new Decimal(),
+    };
+  },
+  infoboxes: {},
+  color: "#0019ff",
+  requires: new Decimal(1e25), // Can be a function that takes requirement increases into account
+  resource: "boosters", // Name of prestige currency
+  baseResource: "points", // Name of resource prestige is based on
+  baseAmount() {
+    return player.points;
+  }, // Get the current amount of baseResource
+  type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+  exponent: 1.25, // Prestige currency exponent
+  base: 4,
+  gainMult() {
+    // Calculate the multiplier for main currency from bonuses
+    mult = new Decimal(1);
+    if (ha("ach", 33)) mult = mult.div(4);
+    return mult;
+  },
+  gainExp() {
+    // Calculate the exponent on main currency from bonuses
+    exp = new Decimal(1);
+    return exp;
+  },
+  row: 2, // Row the layer is in on the tree (0 is the first row)
+  hotkeys: [
+    {
+      key: "b",
+      description: "B: Reset for boosters",
+      onPress() {
+        if (canReset(this.layer)) doReset(this.layer);
+      },
+    },
+  ],
+  layerShown() {
+    return hu("s", 32) || player.b.unlocked;
+  },
+  tabFormat: {
+    upgrades: {
+      content: [
+        "main-display",
+        "prestige-button",
+        "resource-display",
+        ["blank", "5px"], // Height
+
+        "upgrades",
+      ],
+    },
+  },
+  effect() {
+    base = new Decimal(2);
+    if (hu("s", 33)) base = base.plus(1);
+    let eff = new Decimal.pow(base, player.b.points);
+
+    return eff;
+  },
+  effectDescription() {
+    return "boosting points by " + format(tmp.b.effect) + "x";
+  },
+  passiveGeneration() {
+    return 0;
+  },
+  doReset(resettingLayer) {
+    let keep = [];
+
+    if (layers[resettingLayer].row > this.row) layerDataReset("b", keep);
+  },
+  branches: ["p"],
 });
 addLayer("ach", {
   name: "achievements", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -401,13 +639,13 @@ addLayer("ach", {
       width: 600,
       height: 30,
       progress() {
-        return new Decimal(player.ach.achievements.length).div(8);
+        return new Decimal(player.ach.achievements.length).div(14);
       },
       display() {
         return (
           "You have completed " +
           formatWhole(player.ach.achievements.length) +
-          " / 8 achievements"
+          " / 14 achievements"
         );
       },
       unlocked: true,
@@ -484,6 +722,60 @@ addLayer("ach", {
         return hu("s", 13);
       }, // This one is a freebie
       tooltip: "Buy super prestige upgrade 3.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "blue",
+        };
+      },
+    },
+    24: {
+      name: "That Was Painful",
+      done() {
+        return hc("s", 11);
+      }, // This one is a freebie
+      tooltip: "Complete the first super prestige challenge.",
+    },
+    25: {
+      name: "Finaly Some Automation",
+      done() {
+        return hu("s", 21);
+      }, // This one is a freebie
+      tooltip: "Start generating prestige points.",
+    },
+    31: {
+      name: "Reversed Upgrade",
+      done() {
+        return hu("s", 24);
+      }, // This one is a freebie
+      tooltip: "Buy <b>Points Super</b>.",
+    },
+    32: {
+      name: "Time For Something New",
+      done() {
+        return hu("s", 32);
+      }, // This one is a freebie
+      tooltip: "Buy <b>Boosted</b>.<br> Reward: Gain 8x more points.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "red",
+        };
+      },
+    },
+    33: {
+      name: "So Many Points",
+      done() {
+        return player.points.gte(1e27);
+      }, // This one is a freebie
+      tooltip: "Get 1e27 points.<br> Reward: Boosters are 4x cheaper.",
+    },
+    34: {
+      name: "Unlucky",
+      done() {
+        return player.b.points.gte(6);
+      }, // This one is a freebie
+      tooltip: "Get 6 boosters.",
       style() {
         return {
           border: "3px solid",
