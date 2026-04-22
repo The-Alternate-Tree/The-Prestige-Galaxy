@@ -13,12 +13,24 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-  num: "1.01",
+  num: "1.02",
 
-  name: "Achievement Rework",
+  name: "Boosted Progress",
 };
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3><br><br>v1.02 - Boosted Progress - 4/22/2026</h3><br>
+		
+		- Added a new layer, boosters <br>
+		- Added 11 upgrades <br>
+		- Added 1 challenge <br>
+		- Added 6 achievements <br>
+    - Changed the descriptions of most prestige upgrades and 2 SP upgrades <br>
+    - Changed the title of some prestige upgrades and SP upgrades 2 & 3 <br>
+    - Fixed a repeated letter <br>
+    - Made up a few new words, like "genericity"<br>
+	  - Endgame: 14 achievements <br>
+
 <h3><br><br>v1.01 - Achievement Rework - 4/21/2026</h3><br>
 		
 		- Achievements layer now has no subtab in it <br>
@@ -64,7 +76,7 @@ function getPointGen() {
   ha = hasAchievement;
   ic = inChallenge;
   be = buyableEffect;
-
+  if (ic("s", 11)) base = new Decimal(new Decimal(1).div(1e4));
   if (hu("p", 11)) mult = mult.times(2);
   if (hu("p", 12)) mult = mult.times(eff("p", 12));
   if (hu("p", 13)) mult = mult.times(eff("p", 13));
@@ -73,6 +85,13 @@ function getPointGen() {
   if (hu("s", 11)) mult = mult.times(5);
   if (hu("s", 12)) mult = mult.times(10);
   if (hu("s", 13)) mult = mult.times(8);
+  if (hu("s", 14)) mult = mult.div(0.2);
+  if (hu("s", 22)) mult = mult.times(5);
+  if (hu("s", 23)) mult = mult.times(eff("s", 23));
+  if (hu("s", 25)) mult = mult.times(eff("s", 25));
+  if (hu("s", 31)) mult = mult.times(50);
+  if (ha("ach", 32)) mult = mult.times(8);
+  if (ha("ach", 32)) mult = mult.times(tmp.b.effect);
 
   return base.times(mult).pow(exp);
 }
