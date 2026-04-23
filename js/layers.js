@@ -77,6 +77,8 @@ addLayer("p", {
     if (hu("s", 15)) mult = mult.times(3);
     if (hu("s", 22)) mult = mult.times(3);
     if (hu("s", 34)) mult = mult.times(4);
+    if (hu("b", 12)) mult = mult.times(100);
+    if (hu("b", 21)) mult = mult.times(20);
 
     return mult;
   },
@@ -97,6 +99,9 @@ addLayer("p", {
   ],
   layerShown() {
     return true;
+  },
+  autoUpgrade() {
+    return hasMilestone("b", 1) && !hu("p", 25);
   },
   tabFormat: {
     upgrades: {
@@ -190,6 +195,7 @@ addLayer("p", {
         if (ha("ach", 14)) ret = ret.times(1.2);
         if (ha("ach", 21)) ret = ret.times(1.25);
         if (hu("s", 22)) ret = ret.pow(1.1);
+        if (hu("s", 41)) ret = ret.pow(1.35);
 
         return ret;
       },
@@ -271,6 +277,8 @@ addLayer("s", {
     if (hc("s", 11)) mult = mult.times(6);
     if (hu("s", 22)) mult = mult.times(2);
     if (hu("s", 24)) mult = mult.times(eff("s", 24));
+    if (hu("b", 13)) mult = mult.times(50);
+    if (hu("b", 21)) mult = mult.times(20);
 
     return mult;
   },
@@ -426,6 +434,10 @@ addLayer("s", {
       effect() {
         // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
         let ret = player.s.points.add(1).log(4);
+        if (hu("s", 35)) ret = player.s.points.add(1).log(2);
+
+        if (hu("s", 35)) ret = ret.pow(1.2);
+
         return ret;
       },
       effectDisplay() {
@@ -463,6 +475,48 @@ addLayer("s", {
       cost: new Decimal(2.5e7),
       unlocked() {
         return hu("s", 33) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    35: {
+      title: "Better Log",
+      description:
+        "The log 4 in <b>Logarithmic Based Formula</b>'s effect is now a log 2 and effect ^1.2.",
+      cost: new Decimal(200e6),
+      unlocked() {
+        return hu("s", 34) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    41: {
+      title: "I Need More!",
+      description: "Raise <b>Boost The Boost</b>'s effect to ^1.35.",
+      cost: new Decimal(400e6),
+      unlocked() {
+        return hu("s", 35) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    42: {
+      title: "Booster Booster",
+      description: "Each booster adds 0.02 to it's effect base.",
+      cost: new Decimal(5e12),
+      unlocked() {
+        return hu("s", 41) && hc("s", 11);
+      }, // The upgrade is only visible when this is true
+      effect() {
+        // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+        let ret = player.b.points.times(0.02);
+
+        return ret;
+      },
+      effectDisplay() {
+        return "+" + format(this.effect()) + "";
+      }, // Add formatting to the effect
+    },
+    43: {
+      title: "Upgrade Unlock",
+      description: "Unlock booster upgrades.",
+      cost: new Decimal(1.3e14),
+      unlocked() {
+        return hu("s", 42) && hc("s", 11);
       }, // The upgrade is only visible when this is true
     },
   },
@@ -519,6 +573,8 @@ addLayer("b", {
     // Calculate the multiplier for main currency from bonuses
     mult = new Decimal(1);
     if (ha("ach", 33)) mult = mult.div(4);
+    if (hu("b", 14)) mult = mult.div(50);
+
     return mult;
   },
   gainExp() {
@@ -550,10 +606,23 @@ addLayer("b", {
         "upgrades",
       ],
     },
+    milestones: {
+      content: [
+        "main-display",
+        "resource-display",
+        ["blank", "5px"], // Height
+
+        "milestones",
+      ],
+    },
   },
   effect() {
     base = new Decimal(2);
     if (hu("s", 33)) base = base.plus(1);
+    if (hu("b", 15)) base = base.plus(0.5);
+
+    if (hu("s", 42)) base = base.plus(upgradeEffect("s", 42));
+
     let eff = new Decimal.pow(base, player.b.points);
 
     return eff;
@@ -570,6 +639,65 @@ addLayer("b", {
     if (layers[resettingLayer].row > this.row) layerDataReset("b", keep);
   },
   branches: ["p"],
+  upgrades: {
+    11: {
+      title: "Short And Simple I",
+      description: "Gain 100x more points, very short and simple.",
+      cost: new Decimal(21),
+      unlocked() {
+        return hu("s", 43);
+      }, // The upgrade is only visible when this is true
+    },
+    12: {
+      title: "Short And Simple II",
+      description: "Gain 100x more prestige points, it's still short.",
+      cost: new Decimal(24),
+      unlocked() {
+        return hu("b", 11);
+      }, // The upgrade is only visible when this is true
+    },
+    13: {
+      title: "Short And Simple III",
+      description: "Gain 50x more SP, this is the most generic game ever.",
+      cost: new Decimal(25),
+      unlocked() {
+        return hu("b", 12);
+      }, // The upgrade is only visible when this is true
+    },
+    14: {
+      title: "Short And Simple IV",
+      description: "Boosters are 50x cheaper.",
+      cost: new Decimal(26),
+      unlocked() {
+        return hu("b", 13);
+      }, // The upgrade is only visible when this is true
+    },
+    15: {
+      title: "Short And Simple V",
+      description: "Add 0.5 to the booster effect base.",
+      cost: new Decimal(28),
+      unlocked() {
+        return hu("b", 14);
+      }, // The upgrade is only visible when this is true
+    },
+    21: {
+      title: "Everything Boost",
+      description: "Gain 20x more points, prestige points, and SP.",
+      cost: new Decimal(31),
+      unlocked() {
+        return ha("ach", 43);
+      }, // The upgrade is only visible when this is true
+    },
+  },
+  milestones: {
+    1: {
+      requirementDescription: "7 boosters",
+      effectDescription: "Autobuy the first 2 rows of prestige upgrades.",
+      done() {
+        return player.b.points.gte(7);
+      },
+    },
+  },
 });
 addLayer("ach", {
   name: "achievements", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -639,13 +767,13 @@ addLayer("ach", {
       width: 600,
       height: 30,
       progress() {
-        return new Decimal(player.ach.achievements.length).div(14);
+        return new Decimal(player.ach.achievements.length).div(19);
       },
       display() {
         return (
           "You have completed " +
           formatWhole(player.ach.achievements.length) +
-          " / 14 achievements"
+          " / 19 achievements"
         );
       },
       unlocked: true,
@@ -776,6 +904,54 @@ addLayer("ach", {
         return player.b.points.gte(6);
       }, // This one is a freebie
       tooltip: "Get 6 boosters.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "blue",
+        };
+      },
+    },
+    35: {
+      name: "That Was OP",
+      done() {
+        return hu("s", 41);
+      }, // This one is a freebie
+      tooltip: "Get <b>I Need More</b>.",
+    },
+    41: {
+      name: "It's Very Simple...",
+      done() {
+        return hu("b", 11);
+      }, // This one is a freebie
+      tooltip: "Get <b>Short And Simple I</b>.",
+    },
+    42: {
+      name: "Short And Simple Row",
+      done() {
+        return hu("b", 15);
+      }, // This one is a freebie
+      tooltip: "Get every <b>Short And Simple </b> upgrade.",
+    },
+    43: {
+      name: "Let's Go To The Next Row",
+      done() {
+        return player.b.points.gte(30);
+      }, // This one is a freebie
+      tooltip:
+        "Get 30 boosters.<br> Reward: Unlock the next row of booster upgrades.",
+      style() {
+        return {
+          border: "3px solid",
+          "border-color": "green",
+        };
+      },
+    },
+    44: {
+      name: "Booster Madness",
+      done() {
+        return player.b.points.gte(33);
+      }, // This one is a freebie
+      tooltip: "Get 33 boosters.",
       style() {
         return {
           border: "3px solid",
