@@ -13,12 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-  num: "1.02",
+  num: "1.03",
 
-  name: "Boosted Progress",
+  name: "Upgraded Boosters",
 };
 
 let changelog = `<h1>Changelog:</h1><br>
+<h3><br><br>v1.03 - Upgraded Boosters - 4/23/2026</h3><br>
+		
+		- Added 10 upgrades <br>
+		- Added 1 milestone <br>
+		- Added 5 achievements <br>
+    - Added a ton of genericness <br>
+	  - Endgame: 19 achievements <br>
 <h3><br><br>v1.02 - Boosted Progress - 4/22/2026</h3><br>
 		
 		- Added a new layer, boosters <br>
@@ -92,6 +99,8 @@ function getPointGen() {
   if (hu("s", 31)) mult = mult.times(50);
   if (ha("ach", 32)) mult = mult.times(8);
   if (ha("ach", 32)) mult = mult.times(tmp.b.effect);
+  if (hu("b", 11)) mult = mult.times(100);
+  if (hu("b", 21)) mult = mult.times(20);
 
   return base.times(mult).pow(exp);
 }
@@ -106,7 +115,7 @@ var displayThings = [];
 
 // Determines when the game "ends"
 function isEndgame() {
-  return player.points.gte(new Decimal("e280000000"));
+  return new Decimal(player.ach.achievements.length).gte(19);
 }
 
 // Less important things beyond this point!
